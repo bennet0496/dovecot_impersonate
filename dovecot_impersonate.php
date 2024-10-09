@@ -1,5 +1,10 @@
 <?php
 
+use bennetcc\dovecot_impersonate\Log;
+use bennetcc\dovecot_impersonate\LogLevel;
+use IPLib\Range\Subnet;
+use function bennetcc\dovecot_impersonate\__;
+
 /**
  * This plugin lets you impersonate another user using a master login. Only works with dovecot.
  *
@@ -9,49 +14,80 @@
  * @author Bennet Becker (bbecker@pks.mpg.de)
  */
 
+require_once __DIR__ . '/vendor/autoload.php';
+require_once 'log.php';
+require_once 'util.php';
+
 class dovecot_impersonate extends \rcube_plugin
 {
+    private Log $log;
+    private \rcmail $rc;
 
     public function init()
     {
-        $this->add_hook('storage_connect', array($this, 'impersonate'));
-        $this->add_hook('managesieve_connect', array($this, 'impersonate'));
-        $this->add_hook('authenticate', array($this, 'login'));
-        $this->add_hook('sieverules_connect', array($this, 'impersonate_sieve'));
-    }
-
-    function login($data)
-    {
-        // find the seperator character
-        $rcmail = rcmail::get_instance();
+        $this->load_config('config.inc.php.dist');
         $this->load_config();
+        $this->rc = \rcmail::get_instance();
 
-        $seperator = $rcmail->config->get('dovecot_impersonate_seperator', '*');
+        $this->log = new Log("dovecot_impersonate", "dovecot_impersonate", $this->rc->config->get(__('log_level'), LogLevel::INFO->value));
 
-        if (strpos($data['user'], $seperator)) {
-            $arr = explode($seperator, $data['user']);
-            if (count($arr) == 2) {
-                $data['user'] = $arr[0];
-                $_SESSION['plugin.dovecot_impersonate_master'] = $seperator . $arr[1];
+        $this->add_hook('storage_connect', [$this, 'impersonate']);
+        $this->add_hook('managesieve_connect', [$this, 'impersonate']);
+        $this->add_hook('authenticate', [$this, 'login']);
+        $this->add_hook('sieverules_connect', [$this, 'impersonate_sieve']);
+        $this->add_hook('ready', function ($args) {
+//            $this->log->debug($this->rc->user->ID, $this->rc->user->data, $args);
+        });
+        $this->add_hook('render_mailboxlist', [$this, 'render_mailboxlist']);
+
+        $this->add_hook('template_object_username', function ($args) {
+            if (isset($_SESSION['plugin.dovecot_impersonate_admin'])) {
+                return [...$args, 'content' => "Impersonating " . $args['content']];
+            } else {
+                return $args;
             }
-        }
-        return ($data);
+        });
     }
 
-    function impersonate($data)
+    function login(array $data) : array
     {
-        if (isset($_SESSION['plugin.dovecot_impersonate_master'])) {
-            $data['user'] = $data['user'] . $_SESSION['plugin.dovecot_impersonate_master'];
+        $separator = $this->rc->config->get(__('separator'), '*');
+
+        if (str_contains($data['user'], $separator)) {
+            $allow_networks = $this->rc->config->get(__('allow_networks'), ['127.0.0.1/8', '::1/128']);
+            $access_result = array_map(fn ($network) => Subnet::parseString($network)
+                ->contains(IPLib\Factory::parseAddressString($_SERVER['REMOTE_ADDR'])), $allow_networks);
+            $this->log->debug($allow_networks, $access_result, $_SERVER['REMOTE_ADDR']);
+
+            if (in_array(true, $access_result)) {
+                $arr = explode($separator, $data['user']);
+                if (count($arr) == 2) {
+                    $data['user'] = $arr[0];
+                    $_SESSION['plugin.dovecot_impersonate_admin'] = $separator . $arr[1];
+                }
+            } else {
+                return [ 'valid' => false, 'error' => 'Access denied' ];
+            }
+
         }
-        return ($data);
+        return $data;
     }
 
-    function impersonate_sieve($data)
+    function impersonate(array $data) : array
     {
-        if (isset($_SESSION['plugin.dovecot_impersonate_master'])) {
-            $data['username'] = $data['username'] . $_SESSION['plugin.dovecot_impersonate_master'];
+        if (isset($_SESSION['plugin.dovecot_impersonate_admin'])) {
+            $data['user'] = $data['user'] . $_SESSION['plugin.dovecot_impersonate_admin'];
+        }
+        return $data;
+    }
+
+    function impersonate_sieve(array $data) : array
+    {
+        if (isset($_SESSION['plugin.dovecot_impersonate_admin'])) {
+            $data['username'] = $data['username'] . $_SESSION['plugin.dovecot_impersonate_admin'];
         }
         return ($data);
+        return $data;
     }
 
 }
