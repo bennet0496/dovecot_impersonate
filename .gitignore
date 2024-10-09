@@ -1,3 +1,5 @@
+config.inc.php
+
 ### Composer template
 composer.phar
 /vendor/
