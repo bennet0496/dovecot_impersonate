@@ -4,78 +4,74 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2ee5a9d18ec854f28861527c82ff990a",
+    "content-hash": "276fdb6c4f2f1cd1df09eb6e05e7f094",
     "packages": [
         {
-            "name": "curl/curl",
-            "version": "dev-master",
+            "name": "roundcube/plugin-installer",
+            "version": "0.3.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/php-mod/curl.git",
-                "reference": "f207b53643ad176448c6e9644ee91d5557b1c32c"
+                "url": "https://github.com/roundcube/plugin-installer.git",
+                "reference": "c4335e20b86cfe3a184ccf24d675c6a0338a372a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-mod/curl/zipball/f207b53643ad176448c6e9644ee91d5557b1c32c",
-                "reference": "f207b53643ad176448c6e9644ee91d5557b1c32c",
+                "url": "https://api.github.com/repos/roundcube/plugin-installer/zipball/c4335e20b86cfe3a184ccf24d675c6a0338a372a",
+                "reference": "c4335e20b86cfe3a184ccf24d675c6a0338a372a",
                 "shasum": ""
             },
             "require": {
-                "ext-curl": "*",
-                "ext-json": "*",
-                "php": "^8.0"
+                "composer-plugin-api": "^1.0 || ^2.0"
             },
             "require-dev": {
-                "yoast/phpunit-polyfills": "^0.2.0"
+                "composer/composer": "*"
             },
-            "default-branch": true,
-            "type": "library",
+            "type": "composer-plugin",
+            "extra": {
+                "class": [
+                    "Roundcube\\Composer\\RoundcubeInstaller"
+                ]
+            },
             "autoload": {
                 "psr-0": {
-                    "Curl": "src/"
+                    "Roundcube\\Composer": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "MIT"
+                "GPL-3.0+"
             ],
             "authors": [
                 {
-                    "name": "php-curl-class",
-                    "homepage": "https://github.com/php-curl-class"
+                    "name": "Thomas Bruederli",
+                    "email": "thomas@roundcube.net"
                 },
                 {
-                    "name": "Hassan Amouhzi",
-                    "email": "hassan@anezi.net",
-                    "homepage": "http://hassan.amouhzi.com"
+                    "name": "Till Klampaeckel",
+                    "email": "till@php.net"
                 },
                 {
-                    "name": "user52",
-                    "homepage": "https://github.com/user52"
+                    "name": "Philip Weir",
+                    "email": "roundcube@tehinterweb.co.uk"
                 }
             ],
-            "description": "cURL class for PHP",
-            "homepage": "https://github.com/php-mod/curl",
-            "keywords": [
-                "curl",
-                "dot"
-            ],
+            "description": "A composer-installer for Roundcube plugins and skins.",
             "support": {
-                "issues": "https://github.com/php-mod/curl/issues",
-                "source": "https://github.com/php-mod/curl/tree/master"
+                "issues": "https://github.com/roundcube/plugin-installer/issues",
+                "source": "https://github.com/roundcube/plugin-installer/tree/0.3.2"
             },
-            "time": "2024-08-24T05:37:26+00:00"
+            "time": "2022-06-24T09:08:18+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "curl/curl": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": ">=8.1"
+    },
     "platform-dev": [],
     "plugin-api-version": "2.6.0"
 }

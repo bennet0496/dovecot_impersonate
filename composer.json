@@ -1,22 +1,43 @@
 {
-  "name":"cor/dovecot_impersonate",
-  "description":"lets you impersonate another user using the dovecot master user feature",
-  "license":"GPL-2.0",
-  "homepage":"https://github.com/corbosman/dovecot_impersonate",
+  "name": "bennet0496/dovecot_impersonate",
+  "description": "lets you impersonate another user using the dovecot master user feature",
+  "license": "GPL-2.0",
+  "homepage": "https://github.com/bennet0496/dovecot_impersonate",
   "type": "roundcube-plugin",
   "authors": [
-          {
-              "name": "Cor Bosman",
-              "email": "cor@roundcu.be",
-              "homepage": "http://underwa.ter.net",
-              "role": "Developer"
-          }
-      ],
+    {
+      "name": "Cor Bosman",
+      "email": "cor@roundcu.be",
+      "homepage": "http://underwa.ter.net",
+      "role": "Original Developer"
+    },
+    {
+      "name": "Bennet Becker",
+      "email": "bbecker@pks.mpg.de",
+      "role": "Developer"
+    }
+  ],
   "support": {
-          "email": "cor@roundcu.be",
-          "issues": "https://github.com/corbosman/dovecot_impersonate/issues"
-      },
+    "issues": "https://github.com/bennet0496/dovecot_impersonate/issues"
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://plugins.roundcube.net"
+    }
+  ],
   "require": {
-          "curl/curl": "dev-master"
+    "php": ">=8.1",
+    "roundcube/plugin-installer": "^0.3"
+  },
+  "extra": {
+    "roundcube": {
+      "min-version": "1.6.1"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "roundcube/plugin-installer": true
+    }
   }
 }
