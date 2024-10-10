@@ -23,7 +23,7 @@ class dovecot_impersonate extends \rcube_plugin
     private Log $log;
     private \rcmail $rc;
 
-    public function init()
+    public function init() : void
     {
         $this->load_config('config.inc.php.dist');
         $this->load_config();
@@ -35,18 +35,15 @@ class dovecot_impersonate extends \rcube_plugin
         $this->add_hook('managesieve_connect', [$this, 'impersonate']);
         $this->add_hook('authenticate', [$this, 'login']);
         $this->add_hook('sieverules_connect', [$this, 'impersonate_sieve']);
-        $this->add_hook('ready', function ($args) {
-//            $this->log->debug($this->rc->user->ID, $this->rc->user->data, $args);
-        });
-        $this->add_hook('render_mailboxlist', [$this, 'render_mailboxlist']);
-
-        $this->add_hook('template_object_username', function ($args) {
+        $this->add_hook('render_page', function ($ignore) {
             if (isset($_SESSION['plugin.dovecot_impersonate_admin'])) {
-                return [...$args, 'content' => "Impersonating " . $args['content']];
-            } else {
-                return $args;
+                $this->rc->output->set_env('plugin.dovecot_impersonate', true);
+                $this->include_script('dovecot_impersonate.js');
+                $this->include_stylesheet('dovecot_impersonate_redact.css');
+                $this->include_stylesheet('dovecot_impersonate_style.css');
             }
         });
+        $this->add_hook('template_object_username', [$this, 'display_username']);
     }
 
     function login(array $data) : array
@@ -86,8 +83,20 @@ class dovecot_impersonate extends \rcube_plugin
         if (isset($_SESSION['plugin.dovecot_impersonate_admin'])) {
             $data['username'] = $data['username'] . $_SESSION['plugin.dovecot_impersonate_admin'];
         }
-        return ($data);
         return $data;
+    }
+
+    /**
+     * @param array $args
+     * @return array
+     */
+    public function display_username(array $args): array
+    {
+        if (isset($_SESSION['plugin.dovecot_impersonate_admin'])) {
+            return [...$args, 'content' => "Impersonating " . $args['content']];
+        } else {
+            return $args;
+        }
     }
 
 }

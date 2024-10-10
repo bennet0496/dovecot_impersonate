@@ -1,0 +1,15 @@
+#layout-menu, #layout-menu .popover-header {
+    background-color: indianred !important;
+}
+
+#taskmenu a.selected, #taskmenu a:hover, #taskmenu .action-buttons a:hover, #taskmenu a.selected:hover {
+    background-color: hsl(from indianred h s calc(l - 10)) !important;
+}
+
+.special-buttons, html.dark-mode .special-buttons, html.dark-mode #layout-menu .special-buttons a:not(:focus){
+    background-color: hsl(from indianred h s calc(l - 5)) !important;
+}
+
+.menu a.unredact::before {
+  content: "\f06e";
+}
