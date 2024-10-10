@@ -1,37 +1,39 @@
-:not(html.showredacted) > * > span.subject > a, :not(.showredacted) .adr, :not(.showredacted) .date, :not(.showredacted) .size {
+span.subject > a, .adr, .date, .size {
     display: inline-block;
     position: relative;
     white-space: pre;
-    &:after {
-        background: black;
-        border-radius: 0.1em;
-        box-shadow: 0 0 1px rgba(0,0,0,0.35);
-        content: " ";
-        width: 100%;
-        height: 1.5em;
-        left: 0;
-        position: absolute;
-        transform: skewY(-5deg) rotate(5deg);
-    }
 }
 
-:not(.showredacted) li.mailbox > a, :not(.showredacted) .contact .name, :not(.showredacted) li.addressbook > a {
+span.subject > a::after, .adr::after, .date::after, .size::after {
+    background: black;
+    border-radius: 0.1em;
+    box-shadow: 0 0 1px rgba(0,0,0,0.35);
+    content: " ";
+    width: 100%;
+    height: 1.5em;
+    left: 0;
+    position: absolute;
+    transform: skewY(-5deg) rotate(5deg);
+}
+
+li.mailbox > a, .contact .name, li.addressbook > a {
     position: relative;
     white-space: pre;
-    &:first-line {
-        color: black!important;
-        background: black!important;
-        border-radius: 0.1em;
-        box-shadow: 0 0 1px rgba(0,0,0,0.35);
-        content: " ";
-        /*width: 100%;*/
-        height: 1.5em;
-        left: 0;
-        position: absolute;
-        transform: skewY(-5deg) rotate(5deg);
-    }
 }
 
-:not(.showredacted) #messagecontframe, :not(.showredacted) #contact-frame {
+li.mailbox > a::first-line, .contact .name::first-line, li.addressbook > a::first-line {
+    color: black!important;
+    background: black!important;
+    border-radius: 0.1em;
+    box-shadow: 0 0 1px rgba(0,0,0,0.35);
+    content: " ";
+    /*width: 100%;*/
+    height: 1.5em;
+    left: 0;
+    position: absolute;
+    transform: skewY(-5deg) rotate(5deg);
+}
+
+#messagecontframe, #contact-frame {
     filter: blur(1rem);
 }
