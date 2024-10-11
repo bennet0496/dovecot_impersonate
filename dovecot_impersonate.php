@@ -2,6 +2,7 @@
 
 use bennetcc\dovecot_impersonate\Log;
 use bennetcc\dovecot_impersonate\LogLevel;
+use IPLib\Address\Type;
 use IPLib\Range\Subnet;
 use function bennetcc\dovecot_impersonate\__;
 
@@ -52,9 +53,28 @@ class dovecot_impersonate extends \rcube_plugin
 
         if (str_contains($data['user'], $separator)) {
             $allow_networks = $this->rc->config->get(__('allow_networks'), ['127.0.0.1/8', '::1/128']);
-            $access_result = array_map(fn ($network) => Subnet::parseString($network)
-                ->contains(IPLib\Factory::parseAddressString($_SERVER['REMOTE_ADDR'])), $allow_networks);
+
+            $ipv4_count = 0;
+            $ipv6_count = 0;
+            $remote_ip = IPLib\Factory::parseAddressString($_SERVER['REMOTE_ADDR']);
+            $access_result = [];
+
+            foreach ($allow_networks as $network) {
+                $net = Subnet::parseString($network);
+                if ($net->getAddressType() == Type::T_IPv4) {
+                    $ipv4_count += $net->getSize();
+                } else {
+                    $ipv6_count += $net->getSize();
+                }
+                $access_result[] = $net->contains($remote_ip);
+            }
+
             $this->log->debug($allow_networks, $access_result, $_SERVER['REMOTE_ADDR']);
+
+            if ($ipv4_count > 0xF0000000 || $ipv6_count > pow(2.0, 128 - 32)) {
+                $this->log->error("Access restrictions too broad, not more than one IPv4-/4 and one IPv6-/32 network allowed.");
+                return [ 'valid' => false, 'error' => 'Plugin error' ];
+            }
 
             if (in_array(true, $access_result)) {
                 $arr = explode($separator, $data['user']);

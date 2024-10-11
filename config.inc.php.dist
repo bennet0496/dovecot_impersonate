@@ -1,10 +1,25 @@
 <?php
 
-// set the dovecot seperator character. Check your dovecot config file for 'auth_master_user_separator'
+// set the dovecot separator character. Check your dovecot config file for 'auth_master_user_separator'
 //
-// to read about this dovecot feature go to:  http://wiki.dovecot.org/Authentication/MasterUsers
+// to read about this dovecot feature go to:  https://doc.dovecot.org/main/core/config/auth/master_users.html
 //
-
 $config['dovecot_impersonate_separator'] = '*';
+
+// Networks the admin user is allowed to login from.
+//
+// Multiple networks are allow but the total number of hosts may not exceed the ones
+// equivalent to one /4 network (i.e. 128 /8 networks) in the IPv4 case
+// and one /32 prefix (i.e. 4294967296 /64 prefixes) in the IPv6 case
+//
+$config['dovecot_impersonate_allow_networks'] = ['127.0.0.1/8', '::1/128'];
+
+// TRACE = 4
+// DEBUG = 3
+// WARNING = 2
+// INFO = 1
+// ERROR = 0
+//
+$config['dovecot_impersonate_log_level'] = 1;
 
 ?>
