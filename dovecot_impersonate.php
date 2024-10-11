@@ -15,7 +15,6 @@ use function bennetcc\dovecot_impersonate\__;
  * @author Bennet Becker (bbecker@pks.mpg.de)
  */
 
-require_once __DIR__ . '/vendor/autoload.php';
 require_once 'log.php';
 require_once 'util.php';
 
