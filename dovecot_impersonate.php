@@ -9,7 +9,7 @@ use function bennetcc\dovecot_impersonate\__;
 /**
  * This plugin lets you impersonate another user using a master login. Only works with dovecot.
  *
- * http://wiki.dovecot.org/Authentication/MasterUsers
+ * https://doc.dovecot.org/main/core/config/auth/master_users.html
  *
  * @author Cor Bosman (roundcube@wa.ter.net)
  * @author Bennet Becker (bbecker@pks.mpg.de)
