@@ -5,7 +5,7 @@ _Fork of [corbosman/dovecot_impersonate](https://github.com/corbosman/dovecot_im
 This plugin lets you impersonate another user when using the dovecot master user feature.
 
 > [!WARNING]
-> please only use for user support or similar operational issues.  I recommend you always get approval. Using this without consent may be illegal in some countries.  For more information about this feature read: http://wiki.dovecot.org/Authentication/MasterUsers
+> please only use for user support or similar operational issues.  I recommend you always get approval. Using this without consent may be illegal in some countries.  For more information about this feature read: https://doc.dovecot.org/main/core/config/auth/master_users.html
 
 The default separator character used is '*', but you can set a different one
 using the plugin config file.
